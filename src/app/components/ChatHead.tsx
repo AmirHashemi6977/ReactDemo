@@ -1,0 +1,45 @@
+import { cloneElement, useState } from "react";
+import { styled } from "@mui/material";
+import clsx from "clsx";
+
+import { topBarHeight } from "../utils/constant";
+
+// STYLED COMPONENTS
+const PopupRoot = styled("div")(({ theme }) => ({
+  "& .popupOpen": {
+    top: topBarHeight + 16,
+  },
+  "& .closeIcon": { position: "absolute", top: 6, right: 6 },
+}));
+
+const Popup = styled("div")(({ theme }) => ({
+  position: "fixed",
+  left: 0,
+  bottom: 0,
+  top: "100vh",
+  transition: "top 250ms ease-in-out",
+  boxShadow: theme.shadows[6],
+  borderRadius: 6,
+  zIndex: 99999,
+  width: 360,
+  overflow: "hidden",
+  "@media only screen and (max-width: 450px)": {
+    width: "calc(100% - 32px)",
+    left: theme.spacing(2),
+  },
+}));
+
+export default function ChatHead({ icon, children }: any) {
+  const [open, setOpen] = useState(false);
+
+  const togglePopup = () => setOpen((open) => !open);
+
+  return (
+    <PopupRoot>
+      {cloneElement(icon, { onClick: togglePopup })}
+      <Popup className={clsx({ popupOpen: open })}>
+        {open ? cloneElement(children, { togglePopup }) : null}
+      </Popup>
+    </PopupRoot>
+  );
+}
